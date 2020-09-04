@@ -1,0 +1,6 @@
+numpy
+dask
+distributed
+matplotlib
+ipywidgets
+colorcet
