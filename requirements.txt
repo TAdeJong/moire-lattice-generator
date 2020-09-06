@@ -1,5 +1,9 @@
 numpy
 dask
+nodejs
+dask-labextension
+jupyterlab
+
 distributed
 matplotlib
 ipywidgets
