@@ -1,0 +1,14 @@
+name: moire-gen
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - matplotlib
+  - nodejs
+  - distributed
+  - jupyterlab
+  - colorcet
+  - ipywidgets
+  - numpy
+  - dask
+  - dask-labextension
