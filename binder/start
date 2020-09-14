@@ -4,6 +4,6 @@
 sed -i -e "s|DASK_DASHBOARD_URL|/user/${JUPYTERHUB_USER}/proxy/8787|g" binder/jupyterlab-workspace.json
 
 # Import the workspace
-# jupyter lab workspaces import binder/jupyterlab-workspace.json
+jupyter lab workspaces import binder/jupyterlab-workspace.json
 
 exec "$@"
