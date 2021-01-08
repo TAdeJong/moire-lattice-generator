@@ -19,3 +19,7 @@ Click the "Launch binder" button above to open an interactive notebook directly 
 - Activate the environment: `conda activate moire-gen`
 - Run jupyter lab: `jupyter lab` (or use a classical notebook if you prefer.)
 - Update the following line in the notebook: `cluster = LocalCluster(n_workers=1, threads_per_worker=4, memory_limit='2GB')` to match your local machine. The default `cluster=LocalCluster()` typically works fine.
+
+# Acknowledgement
+
+This work was financially supported by the [Netherlands Organisation for Scientific Research (NWO/OCW)](https://www.nwo.nl/en/science-enw) as part of the [Frontiers of Nanoscience (NanoFront)](https://www.universiteitleiden.nl/en/research/research-projects/science/frontiers-of-nanoscience-nanofront) program.
