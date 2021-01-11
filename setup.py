@@ -19,4 +19,8 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.8',
+    isntall_requires=[
+        "numpy",
+        "dask",
+    ],
 )
