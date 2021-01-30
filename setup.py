@@ -23,4 +23,8 @@ setuptools.setup(
         "numpy",
         "dask",
     ],
+    tests_requires=[
+        'pytest',
+    ],
+    test_suite="pytest",
 )

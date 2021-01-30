@@ -26,11 +26,11 @@ def apply_transformation_matrix(vecs, matrix):
 
 
 def rotate(vecs, angle):
-    "Rotate `vecs` by `angle` around the origin."
+    "Rotate 2D vectors `vecs` by `angle` around the origin."
     return apply_transformation_matrix(vecs, rotation_matrix(angle))
 
 
 def wrapToPi(x):
     """Wrap all values of x to the interval -pi,pi"""
-    r = (x+np.pi) % (2*np.pi) - np.pi
+    r = (x + np.pi) % (2*np.pi) - np.pi
     return r
