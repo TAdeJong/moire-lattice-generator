@@ -4,6 +4,7 @@ import itertools as itert
 
 from latticegen.transformations import rotate, rotation_matrix, scaling_matrix, apply_transformation_matrix
 
+
 def generate_ks(r_k, theta, kappa=1., psi=0., sym=6):
     """Generate k-vectors from given parameters."""
     W = rotation_matrix(np.deg2rad(theta))
@@ -12,6 +13,7 @@ def generate_ks(r_k, theta, kappa=1., psi=0., sym=6):
     ks = np.stack([rotate(np.array([r_k,0]), 2*np.pi/sym*i) for i in range(sym)]+[(0,0)])
     ks = apply_transformation_matrix(ks, W @ V.T @ D @ V)
     return ks
+
 
 def hexlattice_gen(r_k, theta, order, size=500, kappa=1., psi=0., shift=np.array((0,0))):
     """Generate a regular hexagonal lattice.
@@ -44,6 +46,7 @@ def hexlattice_gen(r_k, theta, order, size=500, kappa=1., psi=0., shift=np.array
     phases2 = ((xx + shift2[0])*rks[:,0,None,None] + (yy + shift2[1])*rks[:,1,None,None])
     iterated += (k_c[:,None,None]*np.exp(np.pi*2*1j * phases2)).sum(axis=0)
     return iterated.real
+
 
 def hexlattice_gen_fast(r_k, theta, order, size=500, kappa=1., psi=0., shift=np.array((0,0))):
     """Generate a regular hexagonal lattice.
@@ -78,6 +81,7 @@ def hexlattice_gen_fast(r_k, theta, order, size=500, kappa=1., psi=0., shift=np.
     iterated += (k_c*np.exp(np.pi*2*1j * phases2[0])*np.exp(np.pi*2*1j * phases2[1])).real.sum(axis=-1)
     return iterated
 
+
 def squarelattice_gen(r_k, theta, order, size=500, kappa=1., psi=0., shift=np.array((0,0))):
     """Generate a regular square lattice.
     The lattice is generated from the six 90 degree rotated k-vectors
@@ -102,6 +106,7 @@ def squarelattice_gen(r_k, theta, order, size=500, kappa=1., psi=0., shift=np.ar
     iterated = k_c[:,None,None]*np.exp(np.pi*2*1j * phases)
     iterated = iterated.sum(axis=0)
     return iterated.real
+
 
 def trilattice_gen(r_k, theta, order, size=500, kappa=1., psi=0., shift=np.array((0,0))):
     """Generate a regular trigonal lattice.
