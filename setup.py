@@ -3,6 +3,9 @@ import setuptools
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
+
 setuptools.setup(
     name="latticegen",
     version="0.0.1",
@@ -19,11 +22,8 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.8',
-    install_requires=[
-        "numpy",
-        "dask",
-    ],
-    tests_requires=[
+    install_requires=requirements,
+    test_requires=[
         'pytest',
     ],
     test_suite="pytest",
