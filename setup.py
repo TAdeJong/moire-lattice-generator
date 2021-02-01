@@ -25,6 +25,7 @@ setuptools.setup(
     install_requires=requirements,
     test_requires=[
         'pytest',
+        "hypothesis",
     ],
     test_suite="pytest",
 )
