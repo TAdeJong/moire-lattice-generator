@@ -4,10 +4,11 @@ import pytest
 
 from latticegen.transformations import *
 
+
 @pytest.mark.parametrize("A", [
-    np.random.random((5,5))*10,
+    np.random.random((5, 5))*10,
     np.full(4, np.pi),
-    np.arange(-10,10,0.1),
+    np.arange(-10, 10, 0.1),
     ])
 def test_wrapToPi(A):
     res = wrapToPi(A)
@@ -37,8 +38,8 @@ def test_scaling_matrix(kappa):
     assert np.allclose(res_restore, np.eye(2))
 
 def test_outputshapes():
-    A = np.random.random((2,2))
-    vecs = np.random.random((3,2))
+    A = np.random.random((2, 2))
+    vecs = np.random.random((3, 2))
     res = apply_transformation_matrix(vecs, A)
     assert res.shape == vecs.shape
     for a in A.flatten():
