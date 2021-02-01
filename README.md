@@ -1,5 +1,6 @@
 # Moiré lattice generator
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/TAdeJong/moire-lattice-generator/master?urlpath=lab/tree/moire-plane-wave-animation-interactive.ipynb)
+![build](https://github.com/TAdeJong/moire-lattice-generator/workflows/build/badge.svg)
 
 Magic angle bilayer graphene was shown to be superconducting in 2018 [[1](https://doi.org/10.1038/nature26160)]. 
 Despite the considerable hype concerning this discovery, little code exists to visualize the moiré pattern of two graphene layers.
