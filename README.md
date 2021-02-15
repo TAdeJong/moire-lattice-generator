@@ -15,7 +15,16 @@ Furthermore, the effect of uniaxial deformation along a single direction as desc
 Click the "Launch binder" button above to open an interactive notebook directly in your browser. (Note: performance in the mybinder environment is somewhat slow. Download and run the notebook on a local machine for better performance.)
 ![moire pattern](https://repository-images.githubusercontent.com/292806144/05106400-eeab-11ea-8e2f-0b35075b7cef)
 
-## Local installation using conda:
+## Local installation 
+
+```git clone https://github.com/TAdeJong/moire-lattice-generator.git
+cd moire-lattice-generator
+pip install .
+```
+
+If you want to be able to play around with the functions themselves, consider using `pip install -e .`.
+
+### Using conda:
 
 - Clone the repository and open a terminal in the folder `moire-lattice-generator`
 - Create the conda environment: `conda env create -f binder/environment.yml`
