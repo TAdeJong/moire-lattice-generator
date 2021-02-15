@@ -1,6 +1,8 @@
-#Test with pytest
+# Test with pytest
 import numpy as np
 import pytest
+from hypothesis import given
+import hypothesis.strategies as st
 
 from latticegen.transformations import *
 
@@ -22,13 +24,8 @@ def test_identities():
     assert np.allclose(rotation_matrix(2*np.pi), np.eye(2))
     assert np.allclose(rotation_matrix(np.pi), -1*np.eye(2))
 
-@pytest.mark.parametrize("kappa", [
-    1.,
-    3.,
-    -1.,
-    2.5,
-    0.05,
-    ])
+
+@given(st.floats(0., exclude_min=True, allow_infinity=False))
 def test_scaling_matrix(kappa):
     res = scaling_matrix(kappa)
     assert res[0, 0] == kappa
