@@ -28,7 +28,7 @@ def test_generate_ks(r, t, k, p, sym):
 def test_fast_gen(r, t, o, k, p, size):
     # Don't use more than float max periods.
     assume(np.isfinite(r*np.max(size)*np.pi*2))
-    ref = hexlattice_gen2(r, t, o, size, k, p)
+    ref = hexlattice_gen(r, t, o, size, k, p)
     fast = hexlattice_gen_fast(r, t, o, size, k, p)
     assert fast.shape == ref.shape
     ref = ref.compute()
