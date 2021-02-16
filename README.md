@@ -14,7 +14,7 @@ Furthermore, the effect of uniaxial deformation along a single direction as desc
 "](https://doi.org/10.1103/PhysRevResearch.3.013153) can be visualized.
 
 Click the "Launch binder" button above to open an interactive notebook directly in your browser. (Note: performance in the mybinder environment is somewhat slow. Download and run the notebook on a local machine for better performance.)
-![moire pattern](https://repository-images.githubusercontent.com/292806144/05106400-eeab-11ea-8e2f-0b35075b7cef)
+![moire pattern](https://repository-images.githubusercontent.com/292806144/bd108280-7081-11eb-8e03-2018853e1909)
 
 ## Local installation 
 
