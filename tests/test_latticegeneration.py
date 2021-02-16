@@ -22,7 +22,7 @@ def test_generate_ks(r, t, k, p, sym):
        o=st.integers(1, 3),
        k=st.floats(0.001, 10, exclude_min=True),
        p=st.floats(0, np.pi),
-       size=st.one_of([st.integers(2, 100),
+       size=st.one_of([st.integers(2, 50),
                        st.tuples(st.integers(2, 50), st.integers(2, 50))]),
        )
 def test_fast_gen(r, t, o, k, p, size):
@@ -61,8 +61,8 @@ def test_new_hex_gen(r, t, o, k, p, size):
        o=st.integers(1, 3),
        k=st.floats(1e-6, 10, exclude_min=True),
        p=st.floats(0, np.pi),
-       size=st.tuples(st.integers(2, 100),
-                      st.integers(2, 100)),
+       size=st.tuples(st.integers(2, 70),
+                      st.integers(2, 70)),
        sym=st.integers(4, 7),
        )
 def test_gen(r, t, o, sym, k, p, size):
