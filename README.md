@@ -10,7 +10,8 @@ This repository contains a simple Python notebook to interactively generate visu
 
 A high resolution resulting movie of varying twist angle can be found [here](https://www.youtube.com/watch?v=c4n1pMsDNaU).
 
-Furthermore, the effect of uniaxial deformation along a single direction as described in e.g. ["Mapping local heterogeneity in open twisted bilayer graphene devices"](https://arxiv.org/abs/2008.13766) can be visualized.
+Furthermore, the effect of uniaxial deformation along a single direction as described in e.g. ["Measuring local moiré lattice heterogeneity of twisted bilayer graphene
+"](https://doi.org/10.1103/PhysRevResearch.3.013153) can be visualized.
 
 Click the "Launch binder" button above to open an interactive notebook directly in your browser. (Note: performance in the mybinder environment is somewhat slow. Download and run the notebook on a local machine for better performance.)
 ![moire pattern](https://repository-images.githubusercontent.com/292806144/05106400-eeab-11ea-8e2f-0b35075b7cef)
