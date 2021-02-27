@@ -15,6 +15,14 @@ def generate_ks(r_k, theta, kappa=1., psi=0., sym=6):
     ks = apply_transformation_matrix(ks, W @ V.T @ D @ V)
     return ks
 
+def combine_ks(kvecs, order=1, return_counts=False):
+    """Generate all possible different sums of kvecs upto order.
+    if return_counts = true, also return the number of possible combinations
+    for each different sum.
+    """
+    # Yes, this is probably not the smartest way to do this
+    tks = np.array([np.sum(k_prod, axis=0) for k_prod in itert.product(*[kvecs]*order)])
+    return np.unique(tks, return_counts=return_counts, axis=0)
 
 def hexlattice_gen_fast(r_k, theta, order, size=500,
                         kappa=1., psi=0., shift=np.array((0, 0))):
@@ -37,9 +45,7 @@ def hexlattice_gen_fast(r_k, theta, order, size=500,
     xx = da.arange(-1*size[0]/2, size[0]/2)[:, None]
     yy = da.arange(-1*size[1]/2, size[1]/2)[None]
     ks = generate_ks(r_k, theta, kappa, psi, sym=6)
-    # Yes, this is probably not the smartest way to do this
-    tks = np.array([np.sum(ksp, axis=0) for ksp in itert.product(*[ks]*order)])
-    rks, k_c = np.unique(tks, return_counts=True, axis=0)
+    rks, k_c = combine_ks(ks, order=order, return_counts=True)
     rks = da.from_array(rks, chunks=(32, 2))
     phases = (xx + shift[0])[..., None]*rks[:, 0], (yy + shift[1])[..., None]*rks[:, 1]
     iterated = k_c * (np.exp(np.pi*2*1j * phases[0]) * np.exp(np.pi*2*1j * phases[1]))
@@ -136,9 +142,7 @@ def anylattice_gen(r_k, theta, order, symmetry=6, size=500,
     xx = da.arange(-1*size[0]/2, size[0]/2)[:, None]
     yy = da.arange(-1*size[1]/2, size[1]/2)[None]
     ks = generate_ks(r_k, theta, kappa, psi, sym=symmetry)
-    # Yes, this is probably not the smartest way to do this
-    tks = np.array([np.sum(ksp, axis=0) for ksp in itert.product(*[ks]*order)])
-    rks, k_c = np.unique(tks, return_counts=True, axis=0)
+    rks, k_c = combine_ks(ks, order=order, return_counts=True)
     rks = da.from_array(rks, chunks=(13, 2))
     phases = (xx + shift[0])*rks[:, 0, None, None] + (yy + shift[1])*rks[:, 1, None, None]
     iterated = k_c[:, None, None]*np.exp(np.pi*2*1j * phases)
@@ -165,9 +169,7 @@ def anylattice_gen_np(r_k, theta, order=1, symmetry=6, size=50,
     xx = np.arange(-1*size[0]/2, size[0]/2)[:, None]
     yy = np.arange(-1*size[1]/2, size[1]/2)[None]
     ks = generate_ks(r_k, theta, kappa, psi, sym=symmetry)
-    # Yes, this is probably not the smartest way to do this
-    tks = np.array([np.sum(ksp, axis=0) for ksp in itert.product(*[ks]*order)])
-    rks, k_c = np.unique(tks, return_counts=True, axis=0)
+    rks, k_c = combine_ks(ks, order=order, return_counts=True)
     if not np.isfinite(2*np.pi*r_k*(max(size)+max(shift))/2):
         print("Warning, using more than float-max periods in a single lattice.")
     phases = (xx + shift[0])*rks[:, 0, None, None] + (yy + shift[1])*rks[:, 1, None, None]
