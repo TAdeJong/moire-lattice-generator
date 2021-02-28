@@ -1,6 +1,8 @@
 # Moiré lattice generator
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/TAdeJong/moire-lattice-generator/master?urlpath=lab/tree/moire-plane-wave-animation-interactive.ipynb)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/TAdeJong/moire-lattice-generator/HEAD)
 ![build](https://github.com/TAdeJong/moire-lattice-generator/workflows/build/badge.svg)
+
+Easily generate lattices and even quasi-lattices in Python.
 
 Magic angle bilayer graphene was shown to be superconducting in 2018 [[1](https://doi.org/10.1038/nature26160)]. 
 Despite the considerable hype concerning this discovery, little code exists to visualize the moiré pattern of two graphene layers.
@@ -14,6 +16,7 @@ Furthermore, the effect of uniaxial deformation along a single direction as desc
 "](https://doi.org/10.1103/PhysRevResearch.3.013153) can be visualized.
 
 Click the "Launch binder" button above to open an interactive notebook directly in your browser. (Note: performance in the mybinder environment is somewhat slow. Download and run the notebook on a local machine for better performance.)
+
 ![moire pattern](https://repository-images.githubusercontent.com/292806144/bd108280-7081-11eb-8e03-2018853e1909)
 
 ## Local installation 
