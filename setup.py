@@ -7,6 +7,9 @@ with open("README.md", "r", encoding="utf-8") as fh:
 with open('requirements.txt') as f:
     requirements = f.read().splitlines()
 
+with open('requirements_test.txt') as f:
+    requirements_test = f.read().splitlines()
+
 setuptools.setup(
     name="latticegen",
     version=versioneer.get_version(),
@@ -26,9 +29,6 @@ setuptools.setup(
     ],
     python_requires='>=3.7',
     install_requires=requirements,
-    test_requires=[
-        'pytest',
-        "hypothesis",
-    ],
+    test_requires=requirements_test,
     test_suite="pytest",
 )

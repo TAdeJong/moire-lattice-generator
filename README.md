@@ -21,7 +21,8 @@ Click the "Launch binder" button above to open an interactive notebook directly 
 
 ## Local installation 
 
-```git clone https://github.com/TAdeJong/moire-lattice-generator.git
+```
+git clone https://github.com/TAdeJong/moire-lattice-generator.git
 cd moire-lattice-generator
 pip install .
 ```
@@ -35,6 +36,22 @@ If you want to be able to play around with the functions themselves, consider us
 - Activate the environment: `conda activate moire-gen`
 - Run jupyter lab: `jupyter lab` (or use a classical notebook if you prefer.)
 - Update the following line in the notebook: `cluster = LocalCluster(n_workers=1, threads_per_worker=4, memory_limit='2GB')` to match your local machine. The default `cluster=LocalCluster()` typically works fine.
+
+## Testing
+
+This project uses `pytest` and `hypothesis` to run tests.
+
+Install the test dependencies:
+
+```
+$ pip install -r requirements_test.txt
+```
+To run the tests:
+
+```
+$ pytest
+```
+
 
 # Acknowledgement
 
