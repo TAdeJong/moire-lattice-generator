@@ -1,4 +1,5 @@
 import setuptools
+import versioneer
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -8,7 +9,8 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name="latticegen",
-    version="0.0.1",
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmd_class(),
     author="T.A. de Jong",
     author_email="tobiasadejong@gmail.com",
     description="A small package to create images of atomic lattices",
