@@ -1,5 +1,5 @@
 # Moiré lattice generator
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/TAdeJong/moire-lattice-generator/HEAD)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/TAdeJong/moire-lattice-generator/HEAD?urlpath=lab)
 ![build](https://github.com/TAdeJong/moire-lattice-generator/workflows/build/badge.svg)
 
 Easily generate lattices and even quasi-lattices in Python.
