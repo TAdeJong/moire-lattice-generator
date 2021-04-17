@@ -1,3 +1,4 @@
+"""Common code for geometrical transformations"""
 import numpy as np
 
 

@@ -1,3 +1,4 @@
+"""Code to generate edge dislocations/singularities in lattices"""
 import numpy as np
 import dask.array as da
 import itertools as itert

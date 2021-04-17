@@ -1,3 +1,5 @@
+"""Code for generating (quasi-)lattices and the corresponding k-vectors"""
+
 import numpy as np
 import dask.array as da
 import itertools as itert
