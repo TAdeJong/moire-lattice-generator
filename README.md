@@ -2,13 +2,22 @@
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/TAdeJong/moire-lattice-generator/HEAD?urlpath=lab)
 ![build](https://github.com/TAdeJong/moire-lattice-generator/workflows/build/badge.svg)
 
-Easily generate lattices and even quasi-lattices in Python.
+Easily generate lattices, moiré lattices and even quasi-lattices in Python.
 
 Magic angle bilayer graphene was shown to be superconducting in 2018 [[1](https://doi.org/10.1038/nature26160)]. 
 Despite the considerable hype concerning this discovery, little code exists to visualize the moiré pattern of two graphene layers.
 
 To illustrate the work as done in our own paper ["Direct evidence for flat bands in twisted bilayer graphene from nano-ARPES"](https://www.nature.com/articles/s41567-020-01041-x) ([arXiv version here](https://arxiv.org/abs/2002.02289)), I created this repository.
-This repository contains a simple Python notebook to interactively generate visualizations of moire patterns of hexagonal lattices at different angles.
+
+This repository contains Python code to generate lattices with values reasonably like experimental (e.g. STM or TEM) results.
+
+Trigonal, hexagonal, square lattices as well as quasi lattices can be created and combined.
+
+Linear distortions, such as a uniaxial strain along an arbitrary direction and rotations are supported. In addition, arbitrary deformations can be rendered (by passing a deformation tensor to the `shift` parameter).
+
+Edge dislocations can be added to the lattice as well.
+
+A simple Python notebook to interactively generate visualizations of moire patterns of hexagonal lattices at different angles is included.
 
 A high resolution resulting movie of varying twist angle can be found [here](https://www.youtube.com/watch?v=c4n1pMsDNaU).
 
