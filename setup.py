@@ -13,7 +13,7 @@ with open('requirements_test.txt') as f:
 setuptools.setup(
     name="latticegen",
     version=versioneer.get_version(),
-    cmdclass=versioneer.get_cmd_class(),
+    cmdclass=versioneer.get_cmdclass(),
     author="T.A. de Jong",
     author_email="tobiasadejong@gmail.com",
     description="A small package to create images of atomic lattices",
