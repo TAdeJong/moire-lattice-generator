@@ -56,16 +56,19 @@ def hexlattice_gen_singularity_legacy(r_k, theta, order, size=250):
     return iterated.real
 
 
-def hexlattice_gen_singularity(r_k, theta, order, size=250, position=[0, 0]):
+def hexlattice_gen_singularity(r_k, theta, order, size=250,
+                               position=[0, 0], shift=np.array([0,0]),
+                               **kwargs)
     """Generate a hexagonal lattice with a singularity, 
     shifted `position` from the center.    
     Not yet equivalent to hexlattice_gen_singularity_legacy.
     """
-    shift = singularity_shift(r_k, theta, size, position)
-    return hexlattice_gen(r_k, theta, order, size, shift=shift)
+    shift2 = shift + singularity_shift(r_k, theta, size, position)
+    return hexlattice_gen(r_k, theta, order, size, shift=shift2, **kwargs)
 
 
-def singularity_shift(r_k, theta, size=250, position=[0, 0], alpha=0, symmetry=6):
+def singularity_shift(r_k, theta, size=250, position=[0, 0],
+                      alpha=0, symmetry=6):
     """Generate the shift of a edge dislocation at `position`
     for a hexagonal lattice of `size`, with the Burgers vector
     at angle `alpha` (radians) w.r.t. `theta` (in degrees).
@@ -78,7 +81,7 @@ def singularity_shift(r_k, theta, size=250, position=[0, 0], alpha=0, symmetry=6
     yy = da.arange(-size[1]/2, size[1]/2)[None] - position[1]
     phi = np.arctan2(yy, xx)
     phiprime = phi / (2*np.pi)
-    a_0 = np.sin(2*np.pi / symmetry) / r_k
+    a_0 = 1 / np.sin(2*np.pi / symmetry) / r_k
     xp = a_0*np.sin(alpha - np.deg2rad(theta)) * phiprime
     yp = a_0*np.cos(alpha - np.deg2rad(theta)) * phiprime
     shift = np.array([xp, yp]) 

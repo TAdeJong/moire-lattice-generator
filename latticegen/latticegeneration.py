@@ -8,7 +8,26 @@ from latticegen.transformations import rotate, rotation_matrix, scaling_matrix, 
 
 
 def generate_ks(r_k, theta, kappa=1., psi=0., sym=6):
-    """Generate k-vectors from given parameters."""
+    """Generate k-vectors from given parameters.
+
+    Parameters
+    ----------
+    r_k : float
+        length of lattice vectors in k-space. Larger `r_k` correspond
+        to smaller real space lattice constants.
+    theta : float
+        Angle of the first lattice vector with respect to positive
+        horizontal.
+    kappa : float, default: 1
+        strain/deformation magnitude. 1 corresponds to no strain.
+    psi : float, default: 0
+        Principal strain direction with respect to horizontal.
+    sym : int, default 6
+        Rotational symmetry of the unstrained lattice.
+    Returns
+    -------
+    ks : np.array (2x(`sym` + 1))
+    """
     W = rotation_matrix(np.deg2rad(theta))
     V = rotation_matrix(np.deg2rad(psi))
     D = scaling_matrix(kappa)
@@ -19,8 +38,23 @@ def generate_ks(r_k, theta, kappa=1., psi=0., sym=6):
 
 def combine_ks(kvecs, order=1, return_counts=False):
     """Generate all possible different sums of kvecs upto order.
-    if return_counts = true, also return the number of possible combinations
-    for each different sum.
+
+    Parameters
+    ----------
+    kvecs : array-like 2xN
+        k vectors to combine.
+    order: int, default: 1
+        Number of different `kvecs` to combine for each resulting `tks`.
+    return_counts : bool, default False
+        if True, also return the number of possible combinations
+        for each different combination.
+
+    Returns
+    -------
+    tks : (2xM) array of float
+        All possible unique combinations of `kvecs` upto `order`
+    counts : (1xM) array of int, optional
+        Number of combinations for each vectors in tks.
     """
     # Yes, this is probably not the smartest way to do this
     tks = np.array([np.sum(k_prod, axis=0) for k_prod in itert.product(*[kvecs]*order)])
@@ -29,6 +63,7 @@ def combine_ks(kvecs, order=1, return_counts=False):
 def hexlattice_gen_fast(r_k, theta, order, size=500,
                         kappa=1., psi=0., shift=np.array((0, 0))):
     """Generate a regular hexagonal lattice.
+
     Speed optimized version, losing some mathematical precision.
     Tested to be accurate down to max(1e-10*r_k, 1e-10) w.r.t. the regular function.
     The lattice is generated from the six 60 degree rotated k-vectors
@@ -40,7 +75,9 @@ def hexlattice_gen_fast(r_k, theta, order, size=500,
 
     The generated lattice gets returned as a dask array.
 
-    [1] T. Benschop et al., 2020, https://arxiv.org/abs/2008.13766
+    See Also
+    --------
+    anylattice_gen
     """
     if not isinstance(size, tuple):
         size = (size, size)
@@ -60,21 +97,48 @@ def hexlattice_gen_fast(r_k, theta, order, size=500,
     return iterated
 
 def hexlattice_gen(r_k, theta, order, size=500,
-                   kappa=1., psi=0., shift=np.array((0, 0))):
+                   kappa=1., psi=0., shift=np.array((0, 0)), **kwargs):
     """Generate a regular hexagonal lattice.
     The lattice is generated from the six 60 degree rotated k-vectors
     of length r_k, further rotated by `theta` degrees.
-    Size either an int for a size*size lattice, or tuple (N,M) for a rectangle N*M.
-    Optionally, the lattice can be strained by a factor kappa in direction psi[1].
+    Optionally, the lattice can be strained by a factor kappa in direction psi [1].
+    Rendered with higher order frequency components upto order `order`.
 
-    With higher order frequency components upto order `order`
+    Parameters
+    ----------
+    r_k : float
+        length of lattice vectors in k-space. Larger `r_k` correspond
+        to smaller real space lattice constants.
+    theta : float
+        Angle of the first lattice vector with respect to positive
+        horizontal.
+    order : int
+        Order upto which to generate higher frequency components
+        by combining lattice vectors
+    size: int, or pair of int, default: 500
+        Size of the resulting lattice in pixels. if int, the
+        returned lattice will be square.
+    kappa : float, default: 1
+        strain/deformation magnitude. 1 corresponds to no strain.
+    psi : float, default: 0
+        Principal strain direction with respect to horizontal.
+    shift : iterable or array, optional
+        shift of the lattice. Either a pair (x,y) global shift,
+        or an (2xNxM) array where (NxM) corresponds to `size`.
+    **kwargs : dict
+        Keyword arguments to be passed to `anylattice_gen`
 
-    The generated lattice gets returned as a dask array.
+    Returns
+    -------
+    lattice : Dask array
+        The generated lattice.
 
-    [1] T. Benschop et al., 2020, https://arxiv.org/abs/2008.13766
+    See Also
+    --------
+    anylattice_gen
     """
     sublattice_a = anylattice_gen(r_k, theta, order, symmetry=6, size=size,
-                   kappa=kappa, psi=psi, shift=shift)
+                   kappa=kappa, psi=psi, shift=shift, **kwargs)
     # Now add the second shifted sublattice lattice to get a hexagonal lattice
     ks = generate_ks(r_k, theta, kappa, psi, sym=6)
     x = np.array([ks[1], -ks[2]])
@@ -83,66 +147,162 @@ def hexlattice_gen(r_k, theta, order, size=500,
     else:
         shift2 = (shift.T + (np.linalg.inv(x / r_k).T/(3*r_k)).sum(axis=0)).T
     sublattice_b = anylattice_gen(r_k, theta, order, symmetry=6, size=size,
-                   kappa=kappa, psi=psi, shift=shift2)
+                   kappa=kappa, psi=psi, shift=shift2, **kwargs)
     return sublattice_a + sublattice_b
 
 
 def squarelattice_gen(r_k, theta, order, size=500,
-                      kappa=1., psi=0., shift=np.array((0, 0))):
+                      kappa=1., psi=0., shift=np.array((0, 0)), **kwargs):
     """Generate a regular square lattice.
-    The lattice is generated from the six 90 degree rotated k-vectors
-    of length r_k, further rotated by `theta` degrees.
-    Size either an int for a size*size lattice, or tuple (N,M) for a rectangle N*M.
-    Optionally, the lattice can be strained by a factor kappa in direction psi[1].
 
-    With higher order frequency components upto order `order`
+    The lattice is generated from the four 90 degree rotated k-vectors
+    of length `r_k`, further rotated by `theta` degrees.
+    Optionally, the lattice can be strained by a factor `kappa` in direction `psi`[1].
+    Rendered with higher order frequency components upto order `order`.
 
-    The generated lattice gets returned as a dask array.
+    Parameters
+    ----------
+    r_k : float
+        length of lattice vectors in k-space. Larger `r_k` correspond
+        to smaller real space lattice constants.
+    theta : float
+        Angle of the first lattice vector with respect to positive
+        horizontal.
+    order : int
+        Order upto which to generate higher frequency components
+        by combining lattice vectors
+    size: int, or pair of int, default: 500
+        Size of the resulting lattice in pixels. if int, the
+        returned lattice will be square.
+    kappa : float, default: 1
+        strain/deformation magnitude. 1 corresponds to no strain.
+    psi : float, default: 0
+        Principal strain direction with respect to horizontal.
+    shift : iterable or array, optional
+        shift of the lattice. Either a pair (x,y) global shift,
+        or an (2xNxM) array where (NxM) corresponds to `size`.
+    **kwargs : dict
+        Keyword arguments to be passed to `anylattice_gen`
+
+    Returns
+    -------
+    lattice : Dask array
+        The generated lattice.
+
+    See Also
+    --------
+    anylattice_gen
     """
     return anylattice_gen(r_k, theta, order,
                           symmetry=4, size=size,
                           kappa=kappa, psi=psi,
-                          shift=shift)
+                          shift=shift, **kwargs)
 
 
 def trilattice_gen(r_k, theta, order, size=500,
-                   kappa=1., psi=0., shift=np.array((0, 0))):
+                   kappa=1., psi=0., shift=np.array((0, 0)), **kwargs):
     """Generate a regular trigonal lattice.
+
     The lattice is generated from the six 60 degree rotated k-vectors
-    of length r_k, further rotated by `theta` degrees.
-    Size either an int for a size*size lattice, or tuple (N,M) for a rectangle N*M.
-    Optionally, the lattice can be strained by a factor kappa in direction psi[1].
+    of length `r_k`, further rotated by `theta` degrees.
+    Optionally, the lattice can be strained by a factor `kappa` in direction `psi`[1].
+    Rendered with higher order frequency components upto order `order`.
 
-    With higher order frequency components upto order `order`
+    Parameters
+    ----------
+    r_k : float
+        length of lattice vectors in k-space. Larger `r_k` correspond
+        to smaller real space lattice constants.
+    theta : float
+        Angle of the first lattice vector with respect to positive
+        horizontal.
+    order : int
+        Order upto which to generate higher frequency components
+        by combining lattice vectors
+    size: int, or pair of int, default: 500
+        Size of the resulting lattice in pixels. if int, the
+        returned lattice will be square.
+    kappa : float, default: 1
+        strain/deformation magnitude. 1 corresponds to no strain.
+    psi : float, default: 0
+        Principal strain direction with respect to horizontal.
+    shift : iterable or array, optional
+        shift of the lattice. Either a pair (x,y) global shift,
+        or an (2xNxM) array where (NxM) corresponds to `size`.
+    **kwargs : dict
+        Keyword arguments to be passed to `anylattice_gen`
 
-    The generated lattice gets returned as a dask array.
+    Returns
+    -------
+    lattice : Dask array
+        The generated lattice.
 
-    [1] T. Benschop et al., 2020, https://arxiv.org/abs/2008.13766
+    See Also
+    --------
+    anylattice_gen, hexlattice_gen
     """
     return anylattice_gen(r_k, theta, order,
                           symmetry=6, size=size,
                           kappa=kappa, psi=psi,
-                          shift=shift)
+                          shift=shift, **kwargs)
 
 
 def anylattice_gen(r_k, theta, order, symmetry=6, size=500,
-                   kappa=1., psi=0., shift=np.array((0, 0))):
+                   kappa=1., psi=0., shift=np.array((0, 0)),
+                  chunks=(-1,-1)):
     """Generate a regular lattice of any symmetry.
     The lattice is generated from the `symmetry` `360/symmetry` degree rotated k-vectors
-    of length r_k, further rotated by `theta` degrees.
+    of length `r_k`, further rotated by `theta` degrees.
     Size either an int for a size*size lattice, or tuple (N,M) for a rectangle N*M.
     Optionally, the lattice can be strained by a factor kappa in direction psi[1].
 
     With higher order frequency components upto order `order`
 
-    The generated lattice gets returned as a dask array.
+    Parameters
+    ----------
+    r_k : float
+        length of lattice vectors in k-space. Larger `r_k` correspond
+        to smaller real space lattice constants.
+    theta : float
+        Angle of the first lattice vector with respect to positive
+        horizontal.
+    order : int
+        Order upto which to generate higher frequency components
+        by combining lattice vectors
+    size: int, or pair of int, default: 500
+        Size of the resulting lattice in pixels. if int, the
+        returned lattice will be square.
+    kappa : float, default: 1
+        strain/deformation magnitude. 1 corresponds to no strain.
+    psi : float, default: 0
+        Principal strain direction with respect to horizontal.
+    shift : iterable or array, optional
+        shift of the lattice. Either a pair (x,y) global shift,
+        or an (2xNxM) array where (NxM) corresponds to `size`.
+    chunks : int or pair of int, optional
+        dask chunks in which to divide the returned `lattice`.
+    sym : int
+        symmetry of the lattice.
 
-    [1] T. Benschop et al., 2020, https://arxiv.org/abs/2008.13766
+    Returns
+    -------
+    lattice : Dask array
+        The generated lattice.
+
+    See Also
+    --------
+    generate_ks
+
+    References
+    ----------
+    [1] T. Benschop et al., 2020, https://doi.org/10.1103/PhysRevResearch.3.013153
     """
     if not isinstance(size, tuple):
         size = (size, size)
-    xx = da.arange(-1*size[0]/2, size[0]/2)[:, None]
-    yy = da.arange(-1*size[1]/2, size[1]/2)[None]
+    if not isinstance(chunks, tuple):
+        chunks = (chunks, chunks)
+    xx = da.arange(-1*size[0]/2, size[0]/2, chunks=chunks[0])[:, None]
+    yy = da.arange(-1*size[1]/2, size[1]/2, chunks=chunks[1])[None]
     ks = generate_ks(r_k, theta, kappa, psi, sym=symmetry)
     rks, k_c = combine_ks(ks, order=order, return_counts=True)
     rks = da.from_array(rks, chunks=(13, 2))
@@ -153,7 +313,8 @@ def anylattice_gen(r_k, theta, order, symmetry=6, size=500,
 
 def anylattice_gen_np(r_k, theta, order=1, symmetry=6, size=50,
                    kappa=1., psi=0., shift=np.array((0, 0))):
-    """Generate a regular lattice of any symmetry.
+    """Generate a regular lattice of any symmetry in pure numpy.
+
     The lattice is generated from the `symmetry` `360/symmetry` degree rotated k-vectors
     of length r_k, further rotated by `theta` degrees.
     Size either an int for a size*size lattice, or tuple (N,M) for a rectangle N*M.
@@ -164,7 +325,9 @@ def anylattice_gen_np(r_k, theta, order=1, symmetry=6, size=50,
     The generated lattice gets returned as a numpy array.
     Only usable for small values of size and order.
 
-    [1] T. Benschop et al., 2020, https://arxiv.org/abs/2008.13766
+    See Also
+    --------
+    anylattice_gen
     """
     if not isinstance(size, tuple):
         size = (size, size)
@@ -172,7 +335,7 @@ def anylattice_gen_np(r_k, theta, order=1, symmetry=6, size=50,
     yy = np.arange(-1*size[1]/2, size[1]/2)[None]
     ks = generate_ks(r_k, theta, kappa, psi, sym=symmetry)
     rks, k_c = combine_ks(ks, order=order, return_counts=True)
-    if not np.isfinite(2*np.pi*r_k*(max(size)+max(shift))/2):
+    if not np.isfinite(2*np.pi* r_k * (max(size) + max(shift)) / 2):
         print("Warning, using more than float-max periods in a single lattice.")
     phases = (xx + shift[0])*rks[:, 0, None, None] + (yy + shift[1])*rks[:, 1, None, None]
     iterated = k_c[:, None, None]*np.exp(np.pi*2*1j * phases)
