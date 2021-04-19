@@ -6,7 +6,6 @@ import itertools as itert
 from latticegen.transformations import (
     rotate,
     rotation_matrix,
-    scaling_matrix,
     apply_transformation_matrix,
     wrapToPi,
 )
@@ -19,7 +18,7 @@ def hexlattice_gen_singularity_legacy(r_k, theta, order, size=250):
     further rotated by `theta` degrees. With higher order frequency
     components upto order `order` and containing a singularity in the center.
     `theta != 0` does not yield a correct lattice.
-    
+
     The generated lattice gets returned as a dask array.
     """
     if not isinstance(size, tuple):
@@ -39,28 +38,24 @@ def hexlattice_gen_singularity_legacy(r_k, theta, order, size=250):
     shift = (np.linalg.inv(x).T / 3).sum(axis=0)  # Don't ask, this works
     xp = xx + wrapToPi(-np.deg2rad(120 + theta) + np.arctan2(yy, xx)) / 2 / np.pi / r_k
     yp = (yy + 1/np.sqrt(3) * (wrapToPi(-np.deg2rad(120 + theta) + np.arctan2(yy, xx)))
-        / 2/np.pi/r_k)
+          / 2/np.pi/r_k)
     iterated = k_c[:, None, None] * np.exp(np.pi*2j
-        * ((xp - 1 * shift[0]) * rks[:, 0, None, None]
-         + (yp - 1 * shift[1]) * rks[:, 1, None, None]))
+               * ((xp - 1 * shift[0]) * rks[:, 0, None, None]
+               + (yp - 1 * shift[1]) * rks[:, 1, None, None]))
     iterated = iterated.sum(axis=0)
     # Now add the second shifted sublattice lattice to get a hexagonal lattice
-    iterated += (k_c[:, None, None] * np.exp(
-            np.pi * 2j
-            * (
-                (xp + shift[0]) * rks[:, 0, None, None]
-                + (yp + shift[1]) * rks[:, 1, None, None]
-            )
-        )
-    ).sum(axis=0)
+    iterated += (k_c[:, None, None] * np.exp(np.pi * 2j
+                 * ((xp + shift[0]) * rks[:, 0, None, None]
+                 + (yp + shift[1]) * rks[:, 1, None, None]))
+                 ).sum(axis=0)
     return iterated.real
 
 
 def hexlattice_gen_singularity(r_k, theta, order, size=250,
-                               position=[0, 0], shift=np.array([0,0]),
-                               **kwargs)
-    """Generate a hexagonal lattice with a singularity, 
-    shifted `position` from the center.    
+                               position=[0, 0], shift=np.array([0, 0]),
+                               **kwargs):
+    """Generate a hexagonal lattice with a singularity,
+    shifted `position` from the center.
     Not yet equivalent to hexlattice_gen_singularity_legacy.
     """
     shift2 = shift + singularity_shift(r_k, theta, size, position)
@@ -84,5 +79,5 @@ def singularity_shift(r_k, theta, size=250, position=[0, 0],
     a_0 = 1 / np.sin(2*np.pi / symmetry) / r_k
     xp = a_0*np.sin(alpha - np.deg2rad(theta)) * phiprime
     yp = a_0*np.cos(alpha - np.deg2rad(theta)) * phiprime
-    shift = np.array([xp, yp]) 
+    shift = np.array([xp, yp])
     return shift
