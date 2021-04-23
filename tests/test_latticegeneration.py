@@ -12,6 +12,7 @@ from latticegen.latticegeneration import *
        st.integers(4, 7),
        )
 def test_generate_ks(r, t, k, p, sym):
+    assume(np.isfinite(r*np.pi*2))
     ks = generate_ks(r, t, k, p, sym)
     assert ks.shape == (sym + 1, 2)
     assert ks.max() <= max(r * k, r)
