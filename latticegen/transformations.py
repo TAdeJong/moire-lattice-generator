@@ -44,6 +44,31 @@ def scaling_matrix(kappa, dims=2):
     return np.diag([kappa]+[1]*(dims-1))
 
 
+def strain_matrix(epsilon, delta=0.16, axis=0):
+    """Create a scaling matrix corresponding to uniaxial strain
+
+    Only works for the 2D case.
+
+    Parameters
+    ----------
+    epsilon : float
+        applied strain
+    delta : float, default 0.16
+        Poisson ratio. default value corresponds to graphene
+    axis : {0, 1}
+        Axis along which to apply the strain.
+
+    Returns
+    -------
+    ndarray (2 x 2)
+        scaling matrix corresponding
+        to `epsilon` strain along `axis`
+    """
+    scaling = np.full(2, 1 - delta*epsilon)
+    scaling[axis] = 1 + epsilon
+    return np.diag(scaling)
+
+
 def apply_transformation_matrix(vecs, matrix):
     """Apply transformation matrix to a list of vectors.
 
@@ -76,3 +101,15 @@ def wrapToPi(x):
     """Wrap all values of `x` to the interval [-pi,pi)"""
     r = (x + np.pi) % (2*np.pi) - np.pi
     return r
+
+
+def a_0_to_r_k(a_0, symmetry=6):
+    crossprodnorm = np.sin(2*np.pi / symmetry)
+    r_k = 1 / a_0 / crossprodnorm
+    return r_k
+
+
+def r_k_to_a_0(r_k, symmetry=6):
+    crossprodnorm = np.sin(2*np.pi / symmetry)
+    a_0 = 1 / r_k / crossprodnorm
+    return a_0

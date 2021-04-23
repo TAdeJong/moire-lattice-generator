@@ -34,6 +34,7 @@ def test_scaling_matrix(kappa):
     res_restore[0, 0] = 1.
     assert np.allclose(res_restore, np.eye(2))
 
+    
 def test_outputshapes():
     A = np.random.random((2, 2))
     vecs = np.random.random((3, 2))
@@ -41,3 +42,9 @@ def test_outputshapes():
     assert res.shape == vecs.shape
     for a in A.flatten():
         assert rotate(vecs, a).shape == vecs.shape
+
+
+@given(a_0=st.floats(0., exclude_min=True, allow_infinity=False),
+      sym=st.integers(4, 7))
+def test_r_k_to_a_0_identity(a_0, sym):
+    assert np.isclose(r_k_to_a_0(a_0_to_r_k(a_0, sym), sym), a_0)

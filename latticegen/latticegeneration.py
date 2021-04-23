@@ -21,7 +21,8 @@ def generate_ks(r_k, theta, kappa=1., psi=0., sym=6):
     kappa : float, default: 1
         strain/deformation magnitude. 1 corresponds to no strain.
     psi : float, default: 0
-        Principal strain direction with respect to horizontal.
+        Principal strain direction with respect to horizontal
+        in degrees.
     sym : int, default 6
         Rotational symmetry of the unstrained lattice.
     Returns
