@@ -4,7 +4,7 @@ import numpy as np
 import dask.array as da
 import itertools as itert
 
-from latticegen.transformations import rotate, rotation_matrix, scaling_matrix, apply_transformation_matrix
+from latticegen.transformations import rotate, rotation_matrix, scaling_matrix, apply_transformation_matrix, a_0_to_r_k
 
 
 def generate_ks(r_k, theta, kappa=1., psi=0., sym=6):
@@ -34,7 +34,7 @@ def generate_ks(r_k, theta, kappa=1., psi=0., sym=6):
     D = scaling_matrix(kappa)
     ks = np.stack([rotate(np.array([r_k, 0]), 2*np.pi/sym*i) for i in range(sym)]
                   + [(0, 0)])
-    ks = apply_transformation_matrix(ks, W @ V.T @ D @ V)
+    ks = apply_transformation_matrix(ks,  V.T @ D @ V @ W)
     return ks
 
 
@@ -346,3 +346,66 @@ def anylattice_gen_np(r_k, theta, order=1, symmetry=6, size=50,
     iterated = k_c[:, None, None]*np.exp(np.pi*2*1j * phases)
     iterated = iterated.sum(axis=0)
     return iterated.real
+
+
+def physical_lattice_gen(a_0, theta, order, pixelspernm=10, symmetry='hexagonal',
+                         size=500, **kwargs):
+    """Generate a physical lattice
+
+    Wraps anylattice_gen.
+    Using a lattice constant `a_0` in nm and a resolution in pixels per nm,
+    generate a rendering of a lattice of `size` pixels.
+    Optionally, the lattice can be strained by a factor kappa in direction psi[1].
+
+    With higher order frequency components upto order `order`
+
+    Parameters
+    ----------
+    a_0 : float
+        lattice constant in nm
+    theta : float
+        Angle of the first lattice vector with respect to positive
+        horizontal.
+    order : int
+        Order upto which to generate higher frequency components
+        by combining lattice vectors
+    pixelspernm : float, default: 10
+        number of pixels per nanometer.
+    symmetry : {'hexagonal', 'trigonal', 'square'}
+        symmetry of the lattice.
+    size: int, or pair of int, default: 500
+        Size of the resulting lattice in pixels. if int, the
+        returned lattice will be square.
+    **kwargs : dict
+        Keyword arguments to be passed to `anylattice_gen`
+
+    Returns
+    -------
+    lattice : Dask array
+        The generated lattice.
+
+    See Also
+    --------
+    anylattice_gen
+
+    References
+    ----------
+    [1] T. Benschop et al., 2020, https://doi.org/10.1103/PhysRevResearch.3.013153
+    """
+    r_k = 1 / (np.sin(2*np.pi / symmetry) * pixelspernm * a_0)
+    if symmetry == 'square':
+        r_k = a_0_to_r_k(a_0 * pixelspernm, 4)
+        return anylattice_gen(r_k, theta, order,
+                              symmetry=4, **kwargs)
+    else:
+        r_k = a_0_to_r_k(a_0 * pixelspernm, 6)
+        if symmetry == 'hexagonal':
+            return hexlattice_gen(r_k, theta, order,
+                                  **kwargs)
+        elif symmetry == 'trigonal':
+            return anylattice_gen(r_k, theta, order,
+                                  symmetry=6, **kwargs)
+        else:
+            raise Exception("symmetry {} is unknown".format(symmetry))
+    return anylattice_gen(r_k, theta, order,
+                          symmetry=6, **kwargs)
