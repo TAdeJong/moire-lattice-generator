@@ -1,6 +1,7 @@
 # Moiré lattice generator
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/TAdeJong/moire-lattice-generator/HEAD?urlpath=lab)
 ![build](https://github.com/TAdeJong/moire-lattice-generator/workflows/build/badge.svg)
+![PyPI](https://img.shields.io/pypi/v/latticegen)
 
 Easily generate renders of lattices, moiré lattices and even quasi-lattices in Python.
 
@@ -27,7 +28,19 @@ Click the "Launch binder" button above to open an interactive notebook directly 
 
 ![moire pattern](https://repository-images.githubusercontent.com/292806144/bd108280-7081-11eb-8e03-2018853e1909)
 
-## Local installation 
+## Installation 
+
+### Using pip
+
+The package is available on pypi:
+
+```bash
+pip install latticegen
+```
+
+
+### From source
+If you want to install from source, that is of course also possible:
 
 ```
 git clone https://github.com/TAdeJong/moire-lattice-generator.git
@@ -39,11 +52,8 @@ If you want to be able to play around with the functions themselves, consider us
 
 ### Using conda:
 
-- Clone the repository and open a terminal in the folder `moire-lattice-generator`
-- Create the conda environment: `conda env create -f binder/environment.yml`
-- Activate the environment: `conda activate moire-gen`
-- Run jupyter lab: `jupyter lab` (or use a classical notebook if you prefer.)
-- Update the following line in the notebook: `cluster = LocalCluster(n_workers=1, threads_per_worker=4, memory_limit='2GB')` to match your local machine. The default `cluster=LocalCluster()` typically works fine.
+Not yet available in conda-forge, but you can install it in a conda environment using pip. There is an `environment.yml` located in the binder folder in this project which can be used to create the environment:
+`conda env create -f binder/environment.yml`
 
 ## Testing
 
