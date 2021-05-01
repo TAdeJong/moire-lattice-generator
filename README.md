@@ -1,7 +1,7 @@
 # Moiré lattice generator
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/TAdeJong/moire-lattice-generator/HEAD?urlpath=lab)
 ![build](https://github.com/TAdeJong/moire-lattice-generator/workflows/build/badge.svg)
-![PyPI](https://img.shields.io/pypi/v/latticegen)
+[![PyPI](https://img.shields.io/pypi/v/latticegen)](https://pypi.org/project/latticegen/)
 
 Easily generate renders of lattices, moiré lattices and even quasi-lattices in Python.
 
