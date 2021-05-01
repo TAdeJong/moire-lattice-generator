@@ -388,9 +388,6 @@ def physical_lattice_gen(a_0, theta, order, pixelspernm=10, symmetry='hexagonal'
     --------
     anylattice_gen
 
-    References
-    ----------
-    [1] T. Benschop et al., 2020, https://doi.org/10.1103/PhysRevResearch.3.013153
     """
     r_k = 1 / (np.sin(2*np.pi / symmetry) * pixelspernm * a_0)
     if symmetry == 'square':

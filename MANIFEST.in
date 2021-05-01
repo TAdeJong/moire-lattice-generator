@@ -2,5 +2,6 @@ include README.md
 include LICENSE
 include requirements.txt
 graft latticegen
+recursive-exclude * *.py[co]
 include versioneer.py
 include latticegen/_version.py
