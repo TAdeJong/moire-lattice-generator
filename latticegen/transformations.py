@@ -44,7 +44,7 @@ def scaling_matrix(kappa, dims=2):
     return np.diag([kappa]+[1]*(dims-1))
 
 
-def strain_matrix(epsilon, delta=0.16, axis=0):
+def strain_matrix(epsilon, delta=0.16, axis=0, diff=True):
     """Create a scaling matrix corresponding to uniaxial strain
 
     Only works for the 2D case.
@@ -57,6 +57,8 @@ def strain_matrix(epsilon, delta=0.16, axis=0):
         Poisson ratio. default value corresponds to graphene
     axis : {0, 1}
         Axis along which to apply the strain.
+    diff : bool, default True
+        Whether to apply in diffraction or real space.
 
     Returns
     -------
@@ -66,6 +68,8 @@ def strain_matrix(epsilon, delta=0.16, axis=0):
     """
     scaling = np.full(2, 1 - delta*epsilon)
     scaling[axis] = 1 + epsilon
+    if diff:
+        scaling = 1 / scaling
     return np.diag(scaling)
 
 
@@ -113,3 +117,10 @@ def r_k_to_a_0(r_k, symmetry=6):
     crossprodnorm = np.sin(2*np.pi / symmetry)
     a_0 = 1 / r_k / crossprodnorm
     return a_0
+
+
+def epsilon_to_kappa(r_k, epsilon, delta=0.16):
+    """Convert frequency r_k and strain epsilon
+    to corresponding r_k and kappa.
+    """
+    return r_k / (1 - delta*epsilon),  (1 - delta*epsilon) / (1+epsilon)
