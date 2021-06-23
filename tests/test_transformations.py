@@ -29,7 +29,7 @@ def test_identities():
 def test_scaling_matrix(kappa):
     res = scaling_matrix(kappa)
     assert res[0, 0] == kappa
-    assert res.shape == (2,2)
+    assert res.shape == (2, 2)
     res_restore = res.copy()
     res_restore[0, 0] = 1.
     assert np.allclose(res_restore, np.eye(2))

@@ -125,7 +125,8 @@ def hexlattice_gen(r_k, theta, order, size=500,
     kappa : float, default: 1
         strain/deformation magnitude. 1 corresponds to no strain.
     psi : float, default: 0
-        Principal strain direction with respect to horizontal.
+        Principal strain direction with respect to horizontal
+        in degrees.
     shift : iterable or array, optional
         shift of the lattice. Either a pair (x,y) global shift,
         or an (2xNxM) array where (NxM) corresponds to `size`.

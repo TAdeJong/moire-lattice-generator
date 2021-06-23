@@ -58,7 +58,6 @@ def test_fast_gen(r, t, o, k, p, size):
 #     assert np.allclose(ref, new)
 
 
-
 @given(r=st.floats(0.0, exclude_min=True, allow_infinity=False),
        t=st.floats(0, np.pi),
        o=st.integers(1, 3),
