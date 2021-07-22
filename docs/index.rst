@@ -19,10 +19,13 @@ Installation
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
+   notebooks/Lattice_generation
+   notebooks/Quasicrystals
 
+   source/latticegen.rst
 
 Indices and tables
 ==================
