@@ -7,7 +7,7 @@ from latticegen.latticegeneration import *
 
 @given(st.floats(0., exclude_min=True, allow_infinity=False),
        st.floats(0, np.pi),
-       st.floats(0., 10, exclude_min=True),
+       st.floats(1e-300, 10, exclude_min=True),
        st.floats(0, np.pi),
        st.integers(4, 7),
        )
@@ -16,7 +16,7 @@ def test_generate_ks(r, t, k, p, sym):
     assume(r / (np.pi*2) > 0.0)
     ks = generate_ks(r, t, k, p, sym)
     assert ks.shape == (sym + 1, 2)
-    assert ks.max() <= max(r * k, r)
+    assert ks.max() <= max(r / k, r)
 
 
 @given(r=st.floats(1e-20, 1e8, exclude_min=True, allow_infinity=False),

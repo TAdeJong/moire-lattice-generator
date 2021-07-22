@@ -54,7 +54,7 @@ def hexlattice_gen_singularity(r_k, theta, order, size=250,
     --------
     hexlattice_gen, singularity_shift
     """
-    shift2 = shift + singularity_shift(r_k, theta, size, position)
+    shift2 = (shift.T + singularity_shift(r_k, theta, size, position).T).T
     return hexlattice_gen(r_k, theta, order, size, shift=shift2, **kwargs)
 
 
@@ -142,8 +142,8 @@ def hexlattice_gen_singularity_legacy(r_k, theta, order, size=250):
     yp = (yy + 1/np.sqrt(3) * (wrapToPi(-np.deg2rad(120 + theta) + np.arctan2(yy, xx)))
           / 2/np.pi/r_k)
     iterated = k_c[:, None, None] * np.exp(np.pi*2j
-               * ((xp - 1 * shift[0]) * rks[:, 0, None, None]
-                  + (yp - 1 * shift[1]) * rks[:, 1, None, None]))
+                                           * ((xp - 1 * shift[0]) * rks[:, 0, None, None]
+                                              + (yp - 1 * shift[1]) * rks[:, 1, None, None]))
     iterated = iterated.sum(axis=0)
     # Now add the second shifted sublattice lattice to get a hexagonal lattice
     iterated += (k_c[:, None, None] * np.exp(np.pi * 2j

@@ -121,6 +121,16 @@ def r_k_to_a_0(r_k, symmetry=6):
 
 def epsilon_to_kappa(r_k, epsilon, delta=0.16):
     """Convert frequency r_k and strain epsilon
-    to corresponding r_k and kappa.
+    to corresponding r_k and kappa as consumed by
+    functions in `latticegeneration`.
+
+    Returns
+    -------
+    r_k2 : float
+    kappa : float
+
+    See also
+    --------
+    latticegeneration.generate_ks
     """
-    return r_k / (1 - delta*epsilon),  (1 - delta*epsilon) / (1+epsilon)
+    return r_k / (1 - delta*epsilon), (1+epsilon) / (1 - delta*epsilon)
