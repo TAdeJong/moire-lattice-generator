@@ -2,8 +2,12 @@
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/TAdeJong/moire-lattice-generator/HEAD?urlpath=lab)
 ![build](https://github.com/TAdeJong/moire-lattice-generator/workflows/build/badge.svg)
 [![PyPI](https://img.shields.io/pypi/v/latticegen)](https://pypi.org/project/latticegen/)
+[![Documentation Status](https://readthedocs.org/projects/moire-lattice-generator/badge/?version=latest)](https://moire-lattice-generator.readthedocs.io/en/latest/?badge=latest)
+
 
 Easily generate renders of lattices, moiré lattices and even quasi-lattices in Python.
+
+Documentation: https://moire-lattice-generator.readthedocs.io
 
 Magic angle bilayer graphene was shown to be superconducting in 2018 [[1](https://doi.org/10.1038/nature26160)]. 
 Despite the considerable hype concerning this discovery, little code exists to visualize the moiré pattern of two graphene layers.
