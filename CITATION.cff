@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you find this software useful and use it in scientific work, please cite it as below."
+authors:
+- family-names: "de Jong"
+  affiliation: "Leiden Institute of Physics"
+  given-names: "Tobias A."
+  orcid: "https://orcid.org/0000-0002-5211-8081"
+title: "Moiré lattice generator"
+version: 0.0.4
+doi: 10.5281/zenodo.5156831
+license: MIT
+date-released: 2021-08-03
+url: "https://moire-lattice-generator.readthedocs.io"
+repository-code: "https://github.com/TAdeJong/moire-lattice-generator"
