@@ -1,8 +1,8 @@
-latticegen API
-==============
+API
+===
 
 
-latticegeneration module
+Latticegeneration module
 -----------------------------------
 
 .. automodule:: latticegen.latticegeneration
@@ -10,7 +10,7 @@ latticegeneration module
    :undoc-members:
    :show-inheritance:
 
-singularities module
+Singularities module
 -------------------------------
 
 .. automodule:: latticegen.singularities
@@ -18,7 +18,7 @@ singularities module
    :undoc-members:
    :show-inheritance:
 
-transformations module
+Transformations module
 ---------------------------------
 
 .. automodule:: latticegen.transformations

@@ -58,7 +58,7 @@ def hexlattice_gen_singularity(r_k, theta, order, size=250,
     return hexlattice_gen(r_k, theta, order, size, shift=shift2, **kwargs)
 
 
-def singularity_shift(r_k, theta, size=250, position=[0, 0],
+def singularity_shift(r_k, theta, size=500, position=[0, 0],
                       alpha=0., symmetry=6):
     """Generate the shift of an edge dislocation.
 

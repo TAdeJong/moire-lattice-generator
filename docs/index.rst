@@ -22,10 +22,11 @@ Installation
    :maxdepth: 3
    :caption: Contents:
 
-   notebooks/Lattice_generation
-   notebooks/Quasicrystals
+   source/Lattice_generation
+   source/Deformation_and_dislocations
+   source/Quasicrystals
 
-   source/latticegen.rst
+   source/api.rst
 
 Indices and tables
 ==================
