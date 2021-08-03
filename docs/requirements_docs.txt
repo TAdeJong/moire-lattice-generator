@@ -1,6 +1,6 @@
-sphinx
+sphinx==3.5.4
 sphinx-autobuild
-sphinx_rtd_theme
+sphinx_rtd_theme==0.5.2
 ipykernel
-nbsphinx
+nbsphinx==0.8.6
 matplotlib
