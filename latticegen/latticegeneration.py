@@ -2,9 +2,12 @@
 
 import numpy as np
 import dask.array as da
+import warnings
 import itertools as itert
 
-from latticegen.transformations import rotate, rotation_matrix, scaling_matrix, apply_transformation_matrix, a_0_to_r_k
+from latticegen.transformations import (rotate, rotation_matrix, scaling_matrix,
+                                        apply_transformation_matrix, a_0_to_r_k,
+                                        epsilon_to_kappa)
 
 
 def generate_ks(r_k, theta, kappa=1., psi=0., sym=6):
@@ -20,6 +23,8 @@ def generate_ks(r_k, theta, kappa=1., psi=0., sym=6):
         horizontal.
     kappa : float, default: 1
         strain/deformation magnitude. 1 corresponds to no strain.
+        Larger values corresponds to stretching along the `psi` direction
+        in real space, so compression along the same direction in k-space.
     psi : float, default: 0
         Principal strain direction with respect to horizontal
         in degrees.
@@ -31,7 +36,7 @@ def generate_ks(r_k, theta, kappa=1., psi=0., sym=6):
     """
     W = rotation_matrix(np.deg2rad(theta))
     V = rotation_matrix(np.deg2rad(psi))
-    D = scaling_matrix(kappa)
+    D = scaling_matrix(1 / kappa)
     ks = np.stack([rotate(np.array([r_k, 0]), 2*np.pi/sym*i) for i in range(sym)]
                   + [(0, 0)])
     ks = apply_transformation_matrix(ks,  V.T @ D @ V @ W)
@@ -312,7 +317,7 @@ def anylattice_gen(r_k, theta, order, symmetry=6, size=500,
     rks, k_c = combine_ks(ks, order=order, return_counts=True)
     rks = da.from_array(rks, chunks=(13, 2))
     phases = (xx + shift[0])*rks[:, 0, None, None] + (yy + shift[1])*rks[:, 1, None, None]
-    iterated = k_c[:, None, None]*np.exp(np.pi*2*1j * phases)
+    iterated = k_c[:, None, None] * np.exp(np.pi*2*1j * phases)
     iterated = iterated.sum(axis=0)
     return iterated.real
 
@@ -350,7 +355,7 @@ def anylattice_gen_np(r_k, theta, order=1, symmetry=6, size=50,
 
 
 def physical_lattice_gen(a_0, theta, order, pixelspernm=10, symmetry='hexagonal',
-                         size=500, **kwargs):
+                         size=500, epsilon=None, delta=0.16, **kwargs):
     """Generate a physical lattice
 
     Wraps anylattice_gen.
@@ -377,6 +382,11 @@ def physical_lattice_gen(a_0, theta, order, pixelspernm=10, symmetry='hexagonal'
     size: int, or pair of int, default: 500
         Size of the resulting lattice in pixels. if int, the
         returned lattice will be square.
+    epsilon : float
+        Lattice strain
+    delta : float, default=0.16
+        Poisson ratio for lattice strain.
+        Default value corresponds to graphene.
     **kwargs : dict
         Keyword arguments to be passed to `anylattice_gen`
 
@@ -390,20 +400,21 @@ def physical_lattice_gen(a_0, theta, order, pixelspernm=10, symmetry='hexagonal'
     anylattice_gen
 
     """
-    r_k = 1 / (np.sin(2*np.pi / symmetry) * pixelspernm * a_0)
+    if symmetry not in ['square', 'hexagonal', 'trigonal']:
+        raise Exception("Symmetry {} is unknown".format(symmetry))
     if symmetry == 'square':
-        r_k = a_0_to_r_k(a_0 * pixelspernm, 4)
-        return anylattice_gen(r_k, theta, order,
-                              symmetry=4, **kwargs)
+        sym = 4
     else:
-        r_k = a_0_to_r_k(a_0 * pixelspernm, 6)
-        if symmetry == 'hexagonal':
-            return hexlattice_gen(r_k, theta, order,
-                                  **kwargs)
-        elif symmetry == 'trigonal':
-            return anylattice_gen(r_k, theta, order,
-                                  symmetry=6, **kwargs)
-        else:
-            raise Exception("symmetry {} is unknown".format(symmetry))
-    return anylattice_gen(r_k, theta, order,
-                          symmetry=6, **kwargs)
+        sym = 6
+    r_k = a_0_to_r_k(a_0 * pixelspernm, sym)
+    if epsilon is not None:
+        if 'kappa' in kwargs.keys():
+            warnings.warn("Both kappa and epsilon specified, ignoring kappa value")
+        r_k, kappa = epsilon_to_kappa(r_k, epsilon, delta)
+        kwargs['kappa'] = kappa
+    if symmetry == 'hexagonal':
+        return hexlattice_gen(r_k, theta, order, size=size,
+                              **kwargs)
+    else:
+        return anylattice_gen(r_k, theta, order,
+                              symmetry=sym, size=size, **kwargs)

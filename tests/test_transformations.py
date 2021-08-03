@@ -48,3 +48,18 @@ def test_outputshapes():
       sym=st.integers(4, 7))
 def test_r_k_to_a_0_identity(a_0, sym):
     assert np.isclose(r_k_to_a_0(a_0_to_r_k(a_0, sym), sym), a_0)
+
+@given(st.floats(-np.pi, np.pi, exclude_min=True))
+def test_rotation_matrix(theta):
+    A = rotation_matrix(theta)
+    res = apply_transformation_matrix(np.array([1,0]), A)
+    assert np.isclose(np.arctan2(*res[::-1]) , theta)
+
+
+@given(r_k=st.floats(1e-300, 1e300),
+       epsilon=st.floats(1e-300, 0.1))
+def test_epsilon_and_kappa_conversion(r_k, epsilon):
+    r_k2, kappa2 = epsilon_to_kappa(r_k, epsilon)
+    D0 = scaling_matrix(1 / kappa2)
+    D = strain_matrix(epsilon)
+    assert np.allclose(D0*r_k2, D*r_k)
