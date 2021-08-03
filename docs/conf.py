@@ -22,7 +22,7 @@ copyright = '2021, Tobias A. de Jong'
 author = 'Tobias A. de Jong'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.3a'
+release = '0.0.4'
 
 
 # -- General configuration ---------------------------------------------------
