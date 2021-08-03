@@ -59,7 +59,9 @@ If you want to be able to play around with the functions themselves, consider us
 Not yet available in conda-forge, but you can install it in a conda environment using pip. There is an `environment.yml` located in the binder folder in this project which can be used to create the environment:
 `conda env create -f binder/environment.yml`
 
-## Testing
+## Development
+
+### Testing
 
 This project uses `pytest` and `hypothesis` to run tests.
 
@@ -74,6 +76,9 @@ To run the tests:
 $ pytest
 ```
 
+### Releasing
+
+Releases are published to PyPI by github actions when a tag is pushed to GitHub. (Note: we are using versioneer for version management)
 
 # Acknowledgement
 
