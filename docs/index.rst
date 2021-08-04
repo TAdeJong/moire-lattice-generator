@@ -6,8 +6,8 @@
 Latticegen
 ==========
 
-.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.5156832.svg
-   :target: https://doi.org/10.5281/zenodo.5156832
+.. image:: https://zenodo.org/badge/DOI/10.5281/zenodo.5156831.svg
+   :target: https://doi.org/10.5281/zenodo.5156831
 .. image:: https://readthedocs.org/projects/moire-lattice-generator/badge/?version=latest
    :target: https://moire-lattice-generator.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
