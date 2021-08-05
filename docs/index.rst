@@ -33,6 +33,7 @@ Installation
 
    source/Lattice_generation
    source/Deformation_and_dislocations
+   source/Transparency
    source/Quasicrystals
 
    source/api.rst

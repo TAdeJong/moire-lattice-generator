@@ -1,5 +1,6 @@
-from hypothesis import given, assume
+from hypothesis import given, assume, settings
 import hypothesis.strategies as st
+import pytest
 import numpy as np
 
 from latticegen.latticegeneration import *
@@ -7,7 +8,7 @@ from latticegen.latticegeneration import *
 
 @given(st.floats(0., exclude_min=True, allow_infinity=False),
        st.floats(0, np.pi),
-       st.floats(1e-300, 10, exclude_min=True),
+       st.floats(1e-200, 10, exclude_min=True),
        st.floats(0, np.pi),
        st.integers(4, 7),
        )
@@ -35,8 +36,8 @@ def test_fast_gen(r, t, o, k, p, size):
     assert fast.shape == ref.shape
     ref = ref.compute()
     fast = fast.compute()
-    atol = max(1e-10*r, 1e-10)
-    assert np.abs((ref-fast)).max() < atol
+    atol = max(4e-10*r, 1e-10)
+    assert np.abs(ref - fast).max() < atol
     assert np.allclose(ref, fast, rtol=1e-5, atol=atol)
 
 
@@ -66,14 +67,19 @@ def test_fast_gen(r, t, o, k, p, size):
        size=st.tuples(st.integers(2, 70),
                       st.integers(2, 70)),
        sym=st.integers(4, 7),
+       norm=st.booleans()
        )
+@pytest.mark.filterwarnings("ignore:invalid value")
 def test_gen(r, t, o, sym, k, p, size):
     # Don't use more than float max periods.
     assume(np.isfinite(r*max(size)*np.pi*2))
-    ref = anylattice_gen(r, t, o, sym, size, k, p)
+    ref = anylattice_gen(r, t, o, sym, size, k, p, normalize=norm)
     assert ref.shape == size
     ref = ref.compute()
     assert np.all(~np.isnan(ref))
+    if norm:
+        assert np.all(ref <= 1.0)
+        assert np.all(ref >= 0.0)
 
 
 @given(st.integers(3, 500))

@@ -258,8 +258,8 @@ def trilattice_gen(r_k, theta, order, size=500,
 
 
 def anylattice_gen(r_k, theta, order, symmetry=6, size=500,
-                   kappa=1., psi=0., shift=np.array((0, 0)),
-                   chunks=(-1, -1)):
+                   kappa=1., psi=0., shift=np.array([0, 0]),
+                   normalize=False, chunks=(-1, -1)):
     """Generate a regular lattice of any symmetry.
     The lattice is generated from the `symmetry` `360/symmetry` degree rotated k-vectors
     of length `r_k`, further rotated by `theta` degrees.
@@ -291,6 +291,8 @@ def anylattice_gen(r_k, theta, order, symmetry=6, size=500,
     shift : iterable or array, optional
         shift of the lattice. Either a pair (x,y) global shift,
         or an (2xNxM) array where (NxM) corresponds to `size`.
+    normalize : bool, default: False
+        if true, normalize the output values to the interval [0,1].
     chunks : int or pair of int, optional
         dask chunks in which to divide the returned `lattice`.
 
@@ -319,7 +321,13 @@ def anylattice_gen(r_k, theta, order, symmetry=6, size=500,
     phases = (xx + shift[0])*rks[:, 0, None, None] + (yy + shift[1])*rks[:, 1, None, None]
     iterated = k_c[:, None, None] * np.exp(np.pi*2*1j * phases)
     iterated = iterated.sum(axis=0)
-    return iterated.real
+    iterated = iterated.real
+    if normalize:
+        iterated -= iterated.min()
+        iterated = iterated / iterated.max()
+        # Prevent pathetic max = min case.
+        iterated = np.nan_to_num(iterated)
+    return iterated
 
 
 def anylattice_gen_np(r_k, theta, order=1, symmetry=6, size=50,
