@@ -70,7 +70,7 @@ def test_fast_gen(r, t, o, k, p, size):
        norm=st.booleans()
        )
 @pytest.mark.filterwarnings("ignore:invalid value")
-def test_gen(r, t, o, sym, k, p, size):
+def test_gen(r, t, o, sym, k, p, size, norm):
     # Don't use more than float max periods.
     assume(np.isfinite(r*max(size)*np.pi*2))
     ref = anylattice_gen(r, t, o, sym, size, k, p, normalize=norm)
