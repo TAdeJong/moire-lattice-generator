@@ -5,7 +5,7 @@
 [![Documentation Status](https://readthedocs.org/projects/moire-lattice-generator/badge/?version=latest)](https://moire-lattice-generator.readthedocs.io/en/latest/?badge=latest)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5156831.svg)](https://doi.org/10.5281/zenodo.5156831)
 
-
+![test](https://moire-lattice-generator.readthedocs.io/en/latest/_images/source_Transparency_3_0.png)
 
 Easily generate renders of lattices, moiré lattices and even quasi-lattices in Python.
 
