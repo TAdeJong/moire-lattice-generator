@@ -108,12 +108,44 @@ def wrapToPi(x):
 
 
 def a_0_to_r_k(a_0, symmetry=6):
+    """Transform realspace lattice constant to r_k
+
+    Where $r_k = (a_0\\sin(2\\pi/symmetry))^{-1}$.
+    i.e. r_k is 1/(2\\pi) the reciprocal lattice constant.
+
+    Parameters
+    ----------
+    a_0 : float
+        realspace lattice constant
+    symmetry : integer
+        symmetry of the lattice
+
+    Returns
+    -------
+    r_k : float
+        length of k-vector in frequency space
+    """
     crossprodnorm = np.sin(2*np.pi / symmetry)
     r_k = 1 / a_0 / crossprodnorm
     return r_k
 
 
 def r_k_to_a_0(r_k, symmetry=6):
+    """Transform r_k to a realspace lattice constant a_0
+
+    Parameters
+    ----------
+    r_k : float
+        length of k-vector in frequency space
+        as used by lattigeneration functions
+    symmetry : integer
+        symmetry of the lattice
+
+    Returns
+    -------
+    a_0 : float
+        realspace lattice constant
+    """
     crossprodnorm = np.sin(2*np.pi / symmetry)
     a_0 = 1 / r_k / crossprodnorm
     return a_0

@@ -17,7 +17,8 @@ def generate_ks(r_k, theta, kappa=1., psi=0., sym=6):
     ----------
     r_k : float
         length of lattice vectors in k-space. Larger `r_k` correspond
-        to smaller real space lattice constants.
+        to smaller real space lattice constants. 1/r_k is the line 
+        spacing in pixels in the resulting image.
     theta : float
         Angle of the first lattice vector with respect to positive
         horizontal.
@@ -304,6 +305,7 @@ def anylattice_gen(r_k, theta, order, symmetry=6, size=500,
     See Also
     --------
     generate_ks
+    physical_lattice_gen
 
     References
     ----------
