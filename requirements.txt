@@ -1,2 +1,3 @@
 numpy
 dask[array]
+scikit-image
