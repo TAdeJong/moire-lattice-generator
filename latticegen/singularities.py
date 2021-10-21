@@ -3,6 +3,10 @@ import numpy as np
 import dask.array as da
 import itertools as itert
 
+from skimage.feature import peak_local_max
+from scipy.interpolate import RectBivariateSpline
+from scipy.optimize import minimize
+
 from latticegen.transformations import (
     rotate,
     rotation_matrix,
@@ -151,3 +155,146 @@ def hexlattice_gen_singularity_legacy(r_k, theta, order, size=250):
                     + (yp + shift[1]) * rks[:, 1, None, None]))
                  ).sum(axis=0)
     return iterated.real
+
+
+def refine_peaks(image, peaks):
+    """Refine peak locations using a bivariate spline
+
+    Uses scipy.interpolate.RectBivariateSpline to interpolate image,
+    and scipy.optimize.minimize with bounds to find the interpolated maximum.
+
+    Parameters
+    ----------
+    image : 2D array
+        image to interpolate
+    peaks : (2,N) array of ints
+        list of peaks to refine.
+
+    Returns
+    -------
+    interppeaks : (2,N) array of floats
+        The refined peaks.
+    """
+    xx, yy = np.ogrid[:image.shape[0], :image.shape[1]]
+    interp = RectBivariateSpline(xx, yy, -image)
+    interppeaks = np.zeros_like(peaks, dtype=float)
+    for i, peak in enumerate(peaks):
+        interppeaks[i] = minimize(lambda x: interp(*x, grid=False),
+                                  peak,
+                                  bounds=[(peak[0]-2, peak[0]+2),
+                                          (peak[1]-2, peak[1]+2)]
+                                  ).x
+    return interppeaks
+
+
+def subpixel_peak_local_max(image, **kwargs):
+    """A subpixel accurate local peak find
+
+    Wraps skimage.feature.peak_local_max to return
+    subpixel accurate peak locations from a BivariateSpline
+    interpolation.
+
+    Parameters
+    ----------
+    image : 2D array
+        image to find maxima in
+    **kwargs : dict
+        keyword arguments passed to
+        skimage.feature.peak_local_max.
+        indices=False is not supported.
+
+    Returns
+    -------
+    (N,2) array
+        Containing the coordinates of the peaks
+    """
+
+    if 'indices' in kwargs:
+        if not kwargs['indices']:
+            raise NotImplementedError("peak refinement only maks sense for indices==True")
+    peaks = peak_local_max(image, **kwargs)
+    return refine_peaks(image, peaks)
+
+
+def gen_dists_image(peaks, imageshape, rmax=55):
+    """Generate squared distance to peaks
+
+    Parameters
+    ----------
+    peaks : (N,2) array_like
+        peak locations in image
+    imageshape : pair of int
+        shape of the original image
+    rmax : float, default 55
+        maximum radius to use around each peak
+
+    Returns
+    -------
+    res : array_like
+        Array of shape `imageshape`,
+        with the squared distance to the
+        nearest peak in float, with a maximum
+        value of `rmax`.
+    """
+    xx, yy = np.mgrid[:imageshape[0], :imageshape[1]]
+    res = np.full(imageshape, rmax**2)
+    for peak in peaks:
+        intpeak = np.round(peak).astype(int)
+        xs = slice(max(intpeak[0]-rmax, 0), intpeak[0]+rmax)
+        ys = slice(max(intpeak[1]-rmax, 0), intpeak[1]+rmax)
+        dist = (xx[xs, ys]-peak[0])**2 + (yy[xs, ys]-peak[1])**2
+        res[xs, ys] = np.minimum(res[xs, ys], dist)
+    return res
+
+
+def refined_singularity(r_k, theta=0, order=3, S=500, remove_center_atom=True,
+                        position=np.zeros(2), **kwargs):
+    """Created a refined singularity without distorted atoms in the center
+
+    Generate a lattice with a dislocation,
+    then extract atom positions using `subpixel_peak_local_max`.
+    Optionally remove the atom at the position of the dislocation,
+    add a gaussian blob at each atom position.
+
+    Parameters
+    ----------
+    r_k : float
+        length of lattice vectors in k-space. Larger `r_k` correspond
+        to smaller real space lattice constants.
+    theta : float
+        Angle of the first lattice vector with respect to positive
+        horizontal.
+    order : int
+        Order upto which to generate higher frequency components
+        by combining lattice vectors
+    S: int, default: 500
+        Size of the resulting lattice in pixels. The
+        returned lattice will be square.
+    position : iterable, default [0, 0]
+        [x, y] position of the singularity in pixels with
+        respect to the center.
+    remove_center_atom : bool, default=True
+        whether to remove the atom at the center of the dislocation
+    **kwargs : dict
+        Keyword arguments to be passed to `hexlattice_gen`
+
+    Returns
+    -------
+    lattice : numpy array
+        The generated refined lattice with singularity
+
+    See Also
+    --------
+    hexlattice_gen_singularity
+
+    """
+    shift = singularity_shift(r_k, theta, alpha=np.pi, size=S, position=position)
+    lattice = hexlattice_gen(r_k, theta, order=3, shift=shift, size=S, **kwargs).compute()
+
+    peaks = subpixel_peak_local_max(lattice)
+    if remove_center_atom:
+        centerpeakindex = np.argmin(np.linalg.norm(peaks - (position+S//2), axis=1))
+        peaks = np.delete(peaks, centerpeakindex, axis=0)
+    dist_im = gen_dists_image(peaks, lattice.shape, rmax=int(1/r_k))
+    gaussian_lattice = np.exp(-dist_im*(2*np.pi*r_k)**2)
+    return gaussian_lattice

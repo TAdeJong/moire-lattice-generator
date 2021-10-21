@@ -17,7 +17,7 @@ def generate_ks(r_k, theta, kappa=1., psi=0., sym=6):
     ----------
     r_k : float
         length of lattice vectors in k-space. Larger `r_k` correspond
-        to smaller real space lattice constants. 1/r_k is the line 
+        to smaller real space lattice constants. 1/r_k is the line
         spacing in pixels in the resulting image.
     theta : float
         Angle of the first lattice vector with respect to positive
@@ -118,7 +118,8 @@ def hexlattice_gen(r_k, theta, order, size=500,
     ----------
     r_k : float
         length of lattice vectors in k-space. Larger `r_k` correspond
-        to smaller real space lattice constants.
+        to smaller real space lattice constants. 1/r_k is the line
+        spacing in pixels in the resulting image.
     theta : float
         Angle of the first lattice vector with respect to positive
         horizontal.
@@ -134,7 +135,7 @@ def hexlattice_gen(r_k, theta, order, size=500,
         Principal strain direction with respect to horizontal
         in degrees.
     shift : iterable or array, optional
-        shift of the lattice. Either a pair (x,y) global shift,
+        shift of the lattice in pixels. Either a pair (x,y) global shift,
         or an (2xNxM) array where (NxM) corresponds to `size`.
     **kwargs : dict
         Keyword arguments to be passed to `anylattice_gen`
@@ -190,7 +191,7 @@ def squarelattice_gen(r_k, theta, order, size=500,
     psi : float, default: 0
         Principal strain direction with respect to horizontal.
     shift : iterable or array, optional
-        shift of the lattice. Either a pair (x,y) global shift,
+        shift of the lattice in pixels. Either a pair (x,y) global shift,
         or an (2xNxM) array where (NxM) corresponds to `size`.
     **kwargs : dict
         Keyword arguments to be passed to `anylattice_gen`
@@ -238,7 +239,7 @@ def trilattice_gen(r_k, theta, order, size=500,
     psi : float, default: 0
         Principal strain direction with respect to horizontal.
     shift : iterable or array, optional
-        shift of the lattice. Either a pair (x,y) global shift,
+        shift of the lattice in pixels. Either a pair (x,y) global shift,
         or an (2xNxM) array where (NxM) corresponds to `size`.
     **kwargs : dict
         Keyword arguments to be passed to `anylattice_gen`
@@ -273,7 +274,8 @@ def anylattice_gen(r_k, theta, order, symmetry=6, size=500,
     ----------
     r_k : float
         length of lattice vectors in k-space. Larger `r_k` correspond
-        to smaller real space lattice constants.
+        to smaller real space lattice constants. 1/r_k is the line
+        spacing in pixels in the resulting image.
     theta : float
         Angle of the first lattice vector with respect to positive
         horizontal.
@@ -290,7 +292,7 @@ def anylattice_gen(r_k, theta, order, symmetry=6, size=500,
     psi : float, default: 0
         Principal strain direction with respect to horizontal.
     shift : iterable or array, optional
-        shift of the lattice. Either a pair (x,y) global shift,
+        shift of the lattice in pixels. Either a pair (x,y) global shift,
         or an (2xNxM) array where (NxM) corresponds to `size`.
     normalize : bool, default: False
         if true, normalize the output values to the interval [0,1].
