@@ -173,7 +173,7 @@ def refine_peaks(image, peaks):
     Returns
     -------
     interppeaks : (2,N) array of floats
-        The refined peaks.
+        The refined peak locations.
     """
     xx, yy = np.ogrid[:image.shape[0], :image.shape[1]]
     interp = RectBivariateSpline(xx, yy, -image)
