@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# Install the JupyterLab dask-labextension
-pip install dask-labextension
+# Do not install the JupyterLab dask-labextension as in 2023
+# I can't get dask-clusters to play well with mybinder.org anyways
+# pip install dask-labextension
 
 #jupyter labextension install --minimize=False --clean \
 #    dask-labextension \
