@@ -12,3 +12,5 @@ dependencies:
   - dask-labextension>=2.0.0
   - ipywidgets
   - colorcet
+  - scikit-image
+  - scipy
