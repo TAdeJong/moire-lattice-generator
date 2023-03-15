@@ -2,14 +2,14 @@ name: moire-gen
 channels:
   - conda-forge
 dependencies:
-  - python=3.8
+  - python
   - numpy
-  - dask=2.26.0
+  - dask
   - matplotlib
   - nodejs
   - distributed
-  - jupyterlab>=2.0.0
-  - dask-labextension>=2.0.0
+  - jupyterlab
+  - dask-labextension
   - ipywidgets
   - colorcet
   - scikit-image
